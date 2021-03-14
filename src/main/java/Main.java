@@ -1,4 +1,4 @@
-import ButtonSorting.ButtonsSorting;
+import button.sorting.ButtonsSorting;
 
 public class Main {
     public static void main(String[] args) {
