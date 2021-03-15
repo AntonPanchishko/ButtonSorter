@@ -1,7 +1,5 @@
 package button.sorting;
 
-import dto.SortingDto;
-import exception.IncorrectInputException;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,43 +10,45 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import sort.util.ArrayQuickSorting;
+import javax.swing.border.LineBorder;
 
 public class ButtonsSorting extends JFrame implements ActionListener {
-    private final SortingDto sortingDto;
     private JFrame frame;
+    private int[] buttonValues;
+    private List<JButton> buttons;
+    private Thread thread;
+    private JButton enterButton;
+    private JButton sortButton;
+    private JButton resetButton;
+    private JTextField textArrayLength;
+    private JTextField textSpeedSort;
+    private JLabel labelArrayLength;
+    private JLabel labelSpeedSort;
 
     public ButtonsSorting() {
         super("Amount of elements");
-        sortingDto = new SortingDto();
-
-        JButton enterButton = new JButton("Enter");
-        enterButton.setBounds(100,150,100, 30);
-        enterButton.setBackground(Color.blue);
-        enterButton.setForeground(Color.white);
+        enterButton = new JButton("Enter");
+        enterButton.setBounds(100, 150, 100, 30);
+        enterButton.setForeground(Color.BLACK);
         enterButton.addActionListener(this);
-        sortingDto.setEnterButton(enterButton);
         add(enterButton);
 
-        JTextField textArrayLength = new JTextField();
+        textArrayLength = new JTextField();
         textArrayLength.setBounds(100, 100, 100, 20);
-        sortingDto.setTextArrayLength(textArrayLength);
         add(textArrayLength);
 
-        JTextField textSpeedSort = new JTextField();
+        textSpeedSort = new JTextField();
         textSpeedSort.setBounds(650, 250, 100, 20);
-        sortingDto.setTextSpeedSort(textSpeedSort);
+        add(textSpeedSort);
 
-        JLabel labelArrayLength = new JLabel("How many numbers to display?");
+        labelArrayLength = new JLabel("How many numbers to display?");
         labelArrayLength.setBounds(60, 50, 180, 20);
-        sortingDto.setLabelArrayLength(labelArrayLength);
         add(labelArrayLength);
 
-        JLabel labelSpeedSort = new JLabel("<html>Enter speed <br/> show sort [1;30]</html>");
-        labelSpeedSort.setBounds(650, 200, 200,50);
-        sortingDto.setLabelSpeedSort(labelSpeedSort);
+        labelSpeedSort = new JLabel("<html>Enter speed <br/> show sort [1;30]</html>");
+        labelSpeedSort.setBounds(650, 200, 200, 50);
 
-        setSize(300,300);
+        setSize(300, 300);
         setLayout(null);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -56,54 +56,52 @@ public class ButtonsSorting extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
-        if (actionEvent.getSource() == sortingDto.getEnterButton()) {
+        if (actionEvent.getSource() == enterButton) {
             try {
-                int arrayLength = Integer.parseInt(sortingDto.getTextArrayLength().getText());
+                int arrayLength = Integer.parseInt(textArrayLength.getText());
                 if (arrayLength > 50 || arrayLength <= 0) {
-                    throw new IncorrectInputException("You enter incorrect value. "
+                    throw new RuntimeException("You enter incorrect value. "
                             + "Please enter value bigger than 0 and less than 50");
                 }
                 setVisible(false);
                 createFrame();
-                sortingDto.setFrame(frame);
                 generateRandomList(arrayLength);
             } catch (RuntimeException exception) {
                 JOptionPane.showMessageDialog(ButtonsSorting.this,
                         "You enter incorrect value. "
-                        + "Please enter value bigger than 0 and less than 50");
+                                + "Please enter value bigger than 0 and less than 50");
             }
         }
 
-        if (actionEvent.getSource() == sortingDto.getSortButton()) {
+        if (actionEvent.getSource() == sortButton) {
             try {
-                int speedSort = Integer.parseInt(sortingDto.getTextSpeedSort().getText());
+                int speedSort = Integer.parseInt(textSpeedSort.getText());
                 if (speedSort > 30 || speedSort <= 0) {
-                    throw new IncorrectInputException("You enter incorrect value. "
+                    throw new RuntimeException("You enter incorrect value. "
                             + "Please enter value bigger than 0 and less than 30");
                 }
-                for (JButton button: sortingDto.getButtons()) {
-                    button.setBackground(Color.GREEN);
-                    button.setForeground(Color.white);
+                for (JButton button : buttons) {
+                    button.setForeground(Color.BLACK);
                 }
-                Thread thread = new Thread() {
+                thread = new Thread() {
                     @Override
                     public void run() {
-                        ArrayQuickSorting.quickSortUtil(sortingDto.getButtonValues(),
-                                0, sortingDto.getButtonValues().length - 1, sortingDto);
+                        quickSortUtil(buttonValues,
+                                0, buttonValues.length - 1);
                     }
                 };
                 thread.start();
-                sortingDto.getResetButton().setEnabled(false);
-                sortingDto.getSortButton().setEnabled(false);
+                resetButton.setEnabled(false);
+                sortButton.setEnabled(false);
             } catch (RuntimeException exception) {
                 JOptionPane.showMessageDialog(ButtonsSorting.this,
                         "You enter incorrect value. "
-                        + "Please enter value bigger than 0 and less than 30");
+                                + "Please enter value bigger than 0 and less than 30");
             }
         }
-        if (actionEvent.getSource() == sortingDto.getResetButton()) {
+        if (actionEvent.getSource() == resetButton) {
             frame.setVisible(false);
-            sortingDto.getTextArrayLength().setText("");
+            textArrayLength.setText("");
             setVisible(true);
             frame.removeAll();
         }
@@ -111,37 +109,30 @@ public class ButtonsSorting extends JFrame implements ActionListener {
 
     private void createFrame() {
         frame = new JFrame();
-        frame.setSize(800,600);
+        frame.setSize(800, 600);
         frame.setLayout(null);
         frame.setVisible(true);
 
-        JButton sortButton = new JButton("Sort");
-        sortButton.setBounds(650,100,100, 30);
-        sortButton.setForeground(Color.white);
-        sortButton.setBackground(Color.GREEN);
+        sortButton = new JButton("Sort");
+        sortButton.setBounds(650, 100, 100, 30);
+        sortButton.setForeground(Color.BLACK);
         sortButton.addActionListener(this);
-        sortingDto.setSortButton(sortButton);
 
-        JButton resetButton = new JButton("Reset");
-        resetButton.setBounds(650,150,100, 30);
-        resetButton.setForeground(Color.white);
-        resetButton.setBackground(Color.GREEN);
+        resetButton = new JButton("Reset");
+        resetButton.setBounds(650, 150, 100, 30);
+        resetButton.setForeground(Color.BLACK);
         resetButton.addActionListener(this);
-        sortingDto.setResetButton(resetButton);
 
         frame.add(sortButton);
         frame.add(resetButton);
-        frame.add(sortingDto.getTextSpeedSort());
-        frame.add(sortingDto.getLabelSpeedSort());
+        frame.add(textSpeedSort);
+        frame.add(labelSpeedSort);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     private void generateRandomList(int arrayLength) {
-        int [] buttonValues = new int[Integer.parseInt(sortingDto.getTextArrayLength().getText())];
-        sortingDto.setButtonValues(buttonValues);
-
-        List<JButton> buttons = new ArrayList<>();
-        sortingDto.setButtons(buttons);
+        buttonValues = new int[arrayLength];
+        buttons = new ArrayList<>();
         int x = 20;
         int y = 20;
         int width = 100;
@@ -159,7 +150,7 @@ public class ButtonsSorting extends JFrame implements ActionListener {
                     if (e.getSource() == button) {
                         if (Integer.parseInt(button.getText()) > 50) {
                             JOptionPane.showMessageDialog(ButtonsSorting
-                                    .this,"This value bigger than 50");
+                                    .this, "This value bigger than 50");
                         } else {
                             frame.setVisible(false);
                             createFrame();
@@ -168,9 +159,8 @@ public class ButtonsSorting extends JFrame implements ActionListener {
                     }
                 }
             });
-            button.setBounds(x, y, width,height);
+            button.setBounds(x, y, width, height);
             button.setForeground(Color.RED);
-            button.setBackground(Color.BLUE);
             button.setOpaque(true);
             frame.add(button);
             buttons.add(button);
@@ -180,5 +170,89 @@ public class ButtonsSorting extends JFrame implements ActionListener {
         buttonValues[number] = (int) (Math.random() * 29) + 1;
         buttons.get(number).setText(buttonValues[number] + "");
         frame.repaint();
+    }
+
+    public void quickSortUtil(int[] buttonValues, int from, int to) {
+        if (from < to) {
+            int divideIndex = partition(buttonValues, from, to);
+            quickSortUtil(buttonValues, from, divideIndex - 1);
+            quickSortUtil(buttonValues, divideIndex, to);
+        } else {
+            for (int i = from; i <= to; i++) {
+                buttons.get(i).setForeground(Color.BLACK);
+            }
+        }
+        sortButton.setEnabled(true);
+        resetButton.setEnabled(true);
+    }
+
+    public int partition(int[] arr, int from, int to) {
+        int rightIndex = to;
+        int leftIndex = from;
+        int pivot = arr[from + (to - from) / 2];
+        buttons.get(from + (to - from) / 2).setBorder(new LineBorder(Color.pink));
+
+        while (leftIndex <= rightIndex) {
+            buttons.get(rightIndex).setBorder(new LineBorder(Color.RED));
+            while (arr[leftIndex] < pivot) {
+                try {
+                    buttons.get(leftIndex).setBorder(new LineBorder(Color.RED));
+                    thread.sleep(1000 / Integer
+                            .parseInt(textSpeedSort.getText()));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                buttons.get(leftIndex).setBorder(new LineBorder(Color.BLACK));
+                leftIndex++;
+            }
+            buttons.get(leftIndex).setBorder(new LineBorder(Color.RED));
+
+            while (arr[rightIndex] > pivot) {
+                try {
+                    buttons.get(rightIndex).setBorder(new LineBorder(Color.RED));
+                    thread.sleep(1000 / Integer.parseInt(textSpeedSort.getText()));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                buttons.get(rightIndex).setBorder(new LineBorder(Color.BLACK));
+                rightIndex--;
+            }
+            buttons.get(rightIndex).setBorder(new LineBorder(Color.RED));
+
+            if (leftIndex <= rightIndex) {
+                swap(arr, rightIndex, leftIndex);
+                buttons.get(leftIndex).setBorder(new LineBorder(Color.BLACK));
+                buttons.get(rightIndex).setBorder(new LineBorder(Color.BLACK));
+                leftIndex++;
+                rightIndex--;
+            }
+        }
+        buttons.get(from + (to - from) / 2).setBorder(new LineBorder(Color.GREEN));
+        if (leftIndex >= 0) {
+            buttons.get(leftIndex).setBorder(new LineBorder(Color.BLACK));
+        }
+        if (rightIndex >= 0) {
+            buttons.get(rightIndex).setBorder(new LineBorder(Color.BLACK));
+        }
+        return leftIndex;
+    }
+
+    private void swap(int[] array, int firstIndex, int secondIndex) {
+        int tmp = array[firstIndex];
+        array[firstIndex] = array[secondIndex];
+        array[secondIndex] = tmp;
+        buttons.get(firstIndex)
+                .setText(String.valueOf(buttonValues[firstIndex]));
+        buttons.get(secondIndex)
+                .setText(String.valueOf(buttonValues[secondIndex]));
+        buttons.get(firstIndex).setForeground(Color.red);
+        buttons.get(secondIndex).setForeground(Color.red);
+        try {
+            thread.sleep(1000 / Integer.parseInt(textSpeedSort.getText()));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        buttons.get(firstIndex).setForeground(Color.BLACK);
+        buttons.get(secondIndex).setForeground(Color.BLACK);
     }
 }
