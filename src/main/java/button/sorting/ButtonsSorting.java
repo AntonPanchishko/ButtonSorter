@@ -79,7 +79,7 @@ public class ButtonsSorting extends JFrame implements ActionListener {
                 int speedSort = Integer.parseInt(sortingDto.getTextSpeedSort().getText());
                 if (speedSort > 30 || speedSort <= 0) {
                     throw new IncorrectInputException("You enter incorrect value. "
-                            + "Please enter value bigger than 0 and less than 50");
+                            + "Please enter value bigger than 0 and less than 30");
                 }
                 for (JButton button: sortingDto.getButtons()) {
                     button.setBackground(Color.GREEN);
@@ -98,7 +98,7 @@ public class ButtonsSorting extends JFrame implements ActionListener {
             } catch (RuntimeException exception) {
                 JOptionPane.showMessageDialog(ButtonsSorting.this,
                         "You enter incorrect value. "
-                        + "Please enter value bigger than 0 and less than 50");
+                        + "Please enter value bigger than 0 and less than 30");
             }
         }
         if (actionEvent.getSource() == sortingDto.getResetButton()) {
@@ -157,7 +157,7 @@ public class ButtonsSorting extends JFrame implements ActionListener {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if (e.getSource() == button) {
-                        if (Integer.parseInt(button.getText()) > 30) {
+                        if (Integer.parseInt(button.getText()) > 50) {
                             JOptionPane.showMessageDialog(ButtonsSorting
                                     .this,"This value bigger than 50");
                         } else {
