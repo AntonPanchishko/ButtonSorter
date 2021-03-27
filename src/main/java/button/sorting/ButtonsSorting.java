@@ -4,6 +4,7 @@
  * User is able to enter numbers of sort elements and
  * enter the speed of sorting
  */
+
 package button.sorting;
 
 import java.awt.Color;
