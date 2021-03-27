@@ -1,3 +1,10 @@
+/**
+ * This application is able to sorting numbers.
+ * App is using visualisation on Swing.
+ * User is able to enter numbers of sort elements and
+ * enter the speed of sorting
+ */
+
 package button.sorting;
 
 import java.awt.Color;
@@ -11,15 +18,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
-
-/**
- * This application is able to sorting numbers.
- * App is using visualisation on Swing.
- * User is able to enter numbers of sort elements and
- * enter the speed of sorting
- * Also when user click on the button with number which less than 50 and bigger than 0
- * you create a new scope of element
- */
 
 public class ButtonsSorting extends JFrame implements ActionListener {
     private JFrame frame;
