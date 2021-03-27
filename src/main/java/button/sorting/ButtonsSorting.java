@@ -12,6 +12,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
+/**
+ * This application is able to sorting numbers.
+ * App is using visualisation on Swing.
+ * User is able to enter numbers of sort elements and
+ * enter the speed of sorting
+ * Also when user click on the button with number which less than 50 and bigger than 0
+ * you create a new scope of element
+ */
+
 public class ButtonsSorting extends JFrame implements ActionListener {
     private JFrame frame;
     private int[] buttonValues;
@@ -25,6 +34,10 @@ public class ButtonsSorting extends JFrame implements ActionListener {
     private JLabel labelArrayLength;
     private JLabel labelSpeedSort;
 
+    /**
+     * This is constructor for the start display
+     * where you able to enter number of elements
+     */
     public ButtonsSorting() {
         super("Amount of elements");
         enterButton = new JButton("Enter");
@@ -86,7 +99,7 @@ public class ButtonsSorting extends JFrame implements ActionListener {
                 thread = new Thread() {
                     @Override
                     public void run() {
-                        quickSortUtil(buttonValues,
+                        quickSort(buttonValues,
                                 0, buttonValues.length - 1);
                     }
                 };
@@ -107,6 +120,11 @@ public class ButtonsSorting extends JFrame implements ActionListener {
         }
     }
 
+    /**
+     * This method create new display
+     * where you able to enter speed of sorting
+     * or return in previous display
+     */
     private void createFrame() {
         frame = new JFrame();
         frame.setSize(800, 600);
@@ -130,6 +148,11 @@ public class ButtonsSorting extends JFrame implements ActionListener {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    /**
+     * This method generate array of numbers
+     * Every element of array it is value of buttons
+     * @param arrayLength it is size of new array
+     */
     private void generateRandomList(int arrayLength) {
         buttonValues = new int[arrayLength];
         buttons = new ArrayList<>();
@@ -172,11 +195,17 @@ public class ButtonsSorting extends JFrame implements ActionListener {
         frame.repaint();
     }
 
-    public void quickSortUtil(int[] buttonValues, int from, int to) {
+    /**
+     * This method realize quick sort
+     * @param buttonValues this is integer array with value of buttons which will be sorted
+     * @param from starting index
+     * @param to last index
+     */
+    public void quickSort(int[] buttonValues, int from, int to) {
         if (from < to) {
-            int divideIndex = partition(buttonValues, from, to);
-            quickSortUtil(buttonValues, from, divideIndex - 1);
-            quickSortUtil(buttonValues, divideIndex, to);
+            int divideIndex = createPartition(buttonValues, from, to);
+            quickSort(buttonValues, from, divideIndex - 1);
+            quickSort(buttonValues, divideIndex, to);
         } else {
             for (int i = from; i <= to; i++) {
                 buttons.get(i).setForeground(Color.BLACK);
@@ -186,7 +215,16 @@ public class ButtonsSorting extends JFrame implements ActionListener {
         resetButton.setEnabled(true);
     }
 
-    public int partition(int[] arr, int from, int to) {
+    /**
+     * This is inner method of quick sorting using last element as pivot,
+     * places the pivot element at its correct position in sorted array,
+     * smaller than pivot places smaller to left of pivot all greater element to right
+     * @param arr array which will be sort
+     * @param from starting index
+     * @param to ending index
+     * @return value of last element
+     */
+    public int createPartition(int[] arr, int from, int to) {
         int rightIndex = to;
         int leftIndex = from;
         int pivot = arr[from + (to - from) / 2];
@@ -220,7 +258,7 @@ public class ButtonsSorting extends JFrame implements ActionListener {
             buttons.get(rightIndex).setBorder(new LineBorder(Color.RED));
 
             if (leftIndex <= rightIndex) {
-                swap(arr, rightIndex, leftIndex);
+                swapNumbers(arr, rightIndex, leftIndex);
                 buttons.get(leftIndex).setBorder(new LineBorder(Color.BLACK));
                 buttons.get(rightIndex).setBorder(new LineBorder(Color.BLACK));
                 leftIndex++;
@@ -237,7 +275,12 @@ public class ButtonsSorting extends JFrame implements ActionListener {
         return leftIndex;
     }
 
-    private void swap(int[] array, int firstIndex, int secondIndex) {
+    /**
+     * @param array this is array of swapping elements
+     * @param firstIndex index of first element in array which will be swap
+     * @param secondIndex index of second element in array which will be swap
+     */
+    private void swapNumbers(int[] array, int firstIndex, int secondIndex) {
         int tmp = array[firstIndex];
         array[firstIndex] = array[secondIndex];
         array[secondIndex] = tmp;
